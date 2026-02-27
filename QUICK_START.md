@@ -4,6 +4,7 @@
 
 ### 1. Test Locally (2 minutes)
 
+**Linux/macOS/WSL:**
 ```bash
 # Make executable
 chmod +x install.sh test-local.sh
@@ -13,6 +14,15 @@ bash test-local.sh
 
 # If successful, reload shell
 source ~/.bashrc  # or source ~/.zshrc
+```
+
+**Windows PowerShell:**
+```powershell
+# Run installer
+. .\install.ps1
+
+# Reload profile
+. $PROFILE
 ```
 
 ### 2. Try the Commands
@@ -49,9 +59,21 @@ git push -u origin main
 
 ### 4. Test Public Install
 
+**Linux/macOS/WSL:**
 ```bash
 # Test the curl command
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+# Test the PowerShell command
+irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
+```
+
+**Windows CMD:**
+```cmd
+powershell -Command "irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex"
 ```
 
 ## For Your Existing ML Project
@@ -172,8 +194,9 @@ uv pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 ```
 
 ### Windows users
-- Use WSL2 or Git Bash for now
-- PowerShell version coming soon
+- WSL2: Full support (60s install due to filesystem)
+- PowerShell: Full support (v1.1.1+)
+- Git Bash: Use WSL2 instead
 
 ## Next Steps
 

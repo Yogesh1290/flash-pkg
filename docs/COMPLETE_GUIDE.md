@@ -37,15 +37,18 @@ uv pip install -r requirements.txt  # 10-20s on Linux, 60s on WSL
 
 **Two locations:**
 
-1. **Cache directory:** `/home/ubuntu/.cache/uv`
+1. **Cache directory:**
+   - **Linux/macOS/WSL:** `~/.cache/uv`
+   - **Windows PowerShell:** `%LOCALAPPDATA%\uv\cache`
    - Size: ~2.4 GB (typical ML setup)
    - Contains: All downloaded packages ready to use
 
-2. **Compressed export:** `flash-cache-YYYYMMDD-HHMMSS.tar.zst`
-   - Size: 450-500 MB (compressed)
+2. **Compressed export:**
+   - **Linux/macOS/WSL:** `flash-cache-YYYYMMDD-HHMMSS.tar.zst` (477 MB)
+   - **Windows PowerShell:** `flash-cache-YYYYMMDD-HHMMSS.zip`
    - Contains: Compressed cache for sharing
 
-**Windows path:** `\\wsl$\Ubuntu\home\ubuntu\.cache\uv`
+**Windows WSL path:** `\\wsl$\Ubuntu\home\ubuntu\.cache\uv` (accessible from Windows Explorer)
 
 ---
 

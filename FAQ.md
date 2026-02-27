@@ -18,9 +18,11 @@ The cached packages work:
 
 ### Q2: Where is the cache saved?
 
-**Path:** `/home/ubuntu/.cache/uv`
+**Linux/macOS/WSL:** `~/.cache/uv`
 
-(In Windows WSL: `\\wsl$\Ubuntu\home\ubuntu\.cache\uv`)
+**Windows PowerShell:** `%LOCALAPPDATA%\uv\cache` (typically `C:\Users\YourName\AppData\Local\uv\cache`)
+
+**Windows WSL:** `\\wsl$\Ubuntu\home\ubuntu\.cache\uv` (accessible from Windows Explorer)
 
 This is the standard cache location where uv stores downloaded packages.
 
@@ -146,14 +148,30 @@ This warning is NORMAL on WSL. It's not an error - just informing you that files
 
 **YES!** This is a killer feature for teams:
 
+**Linux/macOS/WSL:**
 ```bash
 # On one machine (good WiFi)
 flash bootstrap-ml
-tar -czf flash-cache.tar.gz ~/.cache/uv
+flash export-cache  # Creates flash-cache-YYYYMMDD.tar.zst (477 MB)
 
-# Copy flash-cache.tar.gz to other machines
+# Share file via GitHub Release, Google Drive, S3, etc.
+
 # On other machines:
-tar -xzf flash-cache.tar.gz -C ~/
+flash import-cache flash-cache-YYYYMMDD.tar.zst  # 19 seconds
+
+# Now everyone has instant setup!
+```
+
+**Windows PowerShell:**
+```powershell
+# On one machine (good WiFi)
+flash bootstrap-ml
+flash export-cache  # Creates flash-cache-YYYYMMDD.zip
+
+# Share file via GitHub Release, Google Drive, OneDrive, etc.
+
+# On other machines:
+flash import-cache flash-cache-YYYYMMDD.zip
 
 # Now everyone has instant setup!
 ```
@@ -278,6 +296,7 @@ bun install  # Also has cache!
 
 **Automatic!** flash-pkg detects and configures proxies:
 
+**Linux/macOS/WSL:**
 ```bash
 # Set your proxy
 export http_proxy=http://proxy.company.com:8080
@@ -285,6 +304,16 @@ export https_proxy=http://proxy.company.com:8080
 
 # Run install.sh - it auto-configures uv
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+# Set your proxy
+$env:HTTP_PROXY="http://proxy.company.com:8080"
+$env:HTTPS_PROXY="http://proxy.company.com:8080"
+
+# Run install.ps1 - it auto-detects proxy
+irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
 ```
 
 ---
@@ -358,7 +387,27 @@ uv pip install -r requirements.txt
 
 ---
 
-### Q21: Where can I get help?
+### Q21: What about Windows users?
+
+**Full Windows Support (v1.1.1)!** ✅
+
+| Terminal | Command |
+|----------|---------|
+| **PowerShell** | `irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 \| iex` |
+| **CMD** | `powershell -Command "irm https://...install.ps1 \| iex"` |
+| **Git Bash** | `curl -sSL https://...install.sh \| bash` |
+| **WSL** | `curl -sSL https://...install.sh \| bash` |
+
+**Features:**
+- Native Windows PowerShell installer
+- Uses .zip format for cache (Windows-native)
+- Fast mirror selection (1-2 seconds)
+- All flash commands work
+- Export/import cache supported
+
+---
+
+### Q22: Where can I get help?
 
 **Resources:**
 - GitHub Issues: https://github.com/Yogesh1290/flash-pkg/issues

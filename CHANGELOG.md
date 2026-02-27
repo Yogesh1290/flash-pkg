@@ -4,6 +4,24 @@ All notable changes to flash-pkg will be documented in this file.
 
 ## [1.1.1] - 2026-02-27
 
+### Added
+- 🎉 **Windows PowerShell Support** - Native Windows installer (most requested feature!)
+  - Full PowerShell implementation with `install.ps1`
+  - Uses .zip format for cache (Windows-native compression)
+  - All flash commands work: bootstrap-ml, export-cache, import-cache, ml, mern, sbom
+  - Auto-installs uv and Bun on Windows
+  - Fast mirror selection using HEAD requests (1-2 seconds vs 60+ seconds)
+  - Proxy detection included
+  - Install: `irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex`
+  - Works from PowerShell, CMD, and Git Bash
+
+### Improved
+- ⚡ **PowerShell Installer Performance**
+  - Mirror testing now uses HEAD requests (latency check only)
+  - Total install time: ~2 seconds (vs 60+ seconds before)
+  - Clean UI with progress indicators
+  - No annoying byte-counting progress bars
+
 ### Fixed
 - 🚀 **WSL Performance Optimization** - Optimized `flash export-cache` for Windows/WSL
   - Auto-detects WSL environment

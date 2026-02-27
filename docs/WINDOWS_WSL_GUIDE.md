@@ -1,29 +1,112 @@
-# Windows/WSL Guide for flash-pkg
+# Windows Guide for flash-pkg
 
-## Quick Start on Windows WSL
+## Installation Options
 
-### 1. Install WSL (if not already installed)
+### Option 1: Native Windows PowerShell (v1.1.1+) ⭐ Recommended
 
+**Install in PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
+. $PROFILE
+```
+
+**Features:**
+- ✅ Native Windows support (no WSL needed)
+- ✅ Uses .zip format for cache (Windows-native)
+- ✅ All flash commands work
+- ✅ Auto-installs uv and Bun
+- ✅ Mirror selection and proxy detection
+
+**Test it works:**
+```powershell
+flash
+flash bootstrap-ml
+```
+
+### Option 2: Windows WSL (Linux subsystem)
+
+**Install WSL first:**
 ```powershell
 # In PowerShell (as Administrator)
 wsl --install
 # Restart your computer
 ```
 
-### 2. Install flash-pkg in WSL
-
+**Then install flash-pkg in WSL:**
 ```bash
 # In WSL terminal
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
 source ~/.bashrc
 ```
 
-### 3. Test it works
-
+**Test it works:**
 ```bash
 cd test-examples
 bash quick-test.sh
 ```
+
+## Which Should I Use?
+
+| Feature | PowerShell | WSL |
+|---------|-----------|-----|
+| Setup complexity | Simple | Requires WSL install |
+| Performance | Native | Excellent |
+| Cache format | .zip | .tar.zst |
+| Install time | 10-30s | 60s (filesystem limitation) |
+| Recommendation | ✅ Best for most users | ✅ If you need Linux tools |
+
+## Native Windows PowerShell Guide
+
+### Quick Start
+
+1. **Install:**
+   ```powershell
+   irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
+   . $PROFILE
+   ```
+
+2. **Bootstrap once (on good WiFi):**
+   ```powershell
+   flash bootstrap-ml
+   ```
+
+3. **Create projects:**
+   ```powershell
+   flash ml my-ai-project
+   cd my-ai-project
+   uv add numpy pandas scikit-learn
+   ```
+
+### Cache Sharing (Windows)
+
+**Export cache:**
+```powershell
+flash export-cache
+# Creates: flash-cache-20260227.zip
+```
+
+**Import cache:**
+```powershell
+flash import-cache flash-cache-20260227.zip
+```
+
+**Share with team:**
+- Upload to Google Drive, OneDrive, or GitHub Release
+- Team downloads and imports
+- Everyone gets instant setup!
+
+### Common Commands
+
+```powershell
+flash ml <name>              # Create Python ML project
+flash mern <name>            # Create MERN app
+flash bootstrap-ml           # Pre-cache ML packages
+flash export-cache           # Export cache to .zip
+flash import-cache <file>    # Import cache from .zip
+flash sbom                   # Generate SBOM
+```
+
+## Windows WSL Guide
 
 ## WSL-Specific Optimizations (v1.1.1)
 
@@ -131,16 +214,16 @@ tar -xzf /mnt/c/Users/YourName/Downloads/cache-backup.tar.gz -C ~/
 - Faster transfer
 - Optimized for WSL
 
-## WSL vs Native Windows
+## WSL vs Native Windows PowerShell
 
-| Feature | WSL | Native Windows |
-|---------|-----|----------------|
-| flash-pkg support | ✅ Full (v1.1.1) | 🚧 Coming soon |
-| Performance | Excellent | TBD |
-| Cache sharing | ✅ Optimized | TBD |
-| Setup time | 10-30 seconds | TBD |
-
-**Recommendation**: Use WSL for now, native Windows support coming in v1.2
+| Feature | WSL | Native PowerShell |
+|---------|-----|-------------------|
+| flash-pkg support | ✅ Full (v1.1.1) | ✅ Full (v1.1.1) |
+| Performance | Excellent | Native |
+| Cache format | .tar.zst | .zip |
+| Cache sharing | ✅ Optimized | ✅ Native |
+| Setup time | 60s (filesystem) | 10-30s |
+| Recommendation | Linux tools needed | ✅ Most users |
 
 ## Troubleshooting
 
@@ -269,4 +352,4 @@ A: WSL filesystem limitation. Still 16x faster than downloading!
 
 ---
 
-**flash-pkg v1.1.1** — Now optimized for Windows WSL! 🚀
+**flash-pkg v1.1.1** — Now with native Windows PowerShell support! 🚀

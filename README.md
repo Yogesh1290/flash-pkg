@@ -37,10 +37,23 @@ Built for developers in Nepal/Asia with slow internet, but works blazingly fast 
 
 ### 1. Install (takes 10-30 seconds)
 
+**Linux / macOS / WSL / Git Bash:**
 ```bash
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
 source ~/.bashrc  # or ~/.zshrc
 ```
+
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
+. $PROFILE
+```
+
+**Windows CMD (Command Prompt):**
+```cmd
+powershell -Command "irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex"
+```
+Then close and reopen CMD to use `flash` command.
 
 ### 2. Test it works (optional but recommended)
 
@@ -101,7 +114,7 @@ flash sbom                   # Generate SBOM for security audits
 
 **The Problem:** Your team has slow internet. Everyone waits 45 minutes to download torch, paddleocr, etc.
 
-**The Solution:**
+**The Solution (Linux/macOS/WSL):**
 ```bash
 # Person 1 (good WiFi, one time)
 flash bootstrap-ml
@@ -113,6 +126,20 @@ flash export-cache           # Creates flash-cache-20260227.tar.zst (477 MB, 33s
 flash import-cache flash-cache-20260227.tar.zst  # 19 seconds
 cd your-project
 uv pip install -r requirements.txt               # 60s on WSL, 10-20s on Linux!
+```
+
+**Windows PowerShell:**
+```powershell
+# Person 1 (good WiFi, one time)
+flash bootstrap-ml
+flash export-cache           # Creates flash-cache-20260227.zip
+
+# Share file via GitHub Release, Google Drive, company S3, or even WhatsApp!
+
+# Everyone else (instant setup)
+flash import-cache flash-cache-20260227.zip
+cd your-project
+uv pip install -r requirements.txt
 ```
 
 **Result:** 45 minutes → 79 seconds for entire team on WSL! 🚀
@@ -210,13 +237,15 @@ uv run python main.py
 | Linux | ✅ Full support | Tested on Ubuntu 22.04+, Debian, Arch. Install: 10-20s |
 | macOS | ✅ Full support | Intel + Apple Silicon. Install: 10-20s |
 | Windows WSL | ✅ Full support | Optimized in v1.1.1. Install: 60s (filesystem limitation) |
-| Windows | 🚧 Coming soon | PowerShell version in progress |
+| Windows PowerShell | ✅ Full support | Native Windows support. Uses .zip format for cache |
+| Windows CMD | ✅ Full support | Works via PowerShell pipe. Default VS Code terminal |
+| Windows Git Bash | ✅ Full support | Uses install.sh like Linux/macOS |
 
 ---
 
 ## Roadmap
 
-- [ ] Windows PowerShell installer
+- [x] Windows PowerShell installer (v1.1.1)
 - [ ] `flash test-mirrors` — benchmark all mirrors and pick fastest
 - [ ] Pre-built wheel cache on Cloudflare R2 (free CDN)
 - [ ] `flash monorepo-init` — uv workspaces + Turborepo
@@ -291,8 +320,19 @@ A: Yes. Rippling, Snyk, Plotly already use uv in production. This adds convenien
 
 **Ready to stop waiting?**
 
+**Linux/macOS/WSL/Git Bash:**
 ```bash
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
+```
+
+**Windows CMD:**
+```cmd
+powershell -Command "irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex"
 ```
 
 🚀
