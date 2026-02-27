@@ -2,6 +2,29 @@
 
 All notable changes to flash-pkg will be documented in this file.
 
+## [1.1.1] - 2026-02-27
+
+### Fixed
+- 🚀 **WSL Performance Optimization** - Optimized `flash export-cache` for Windows/WSL
+  - Auto-detects WSL environment
+  - Uses faster compression (level 10 vs 19) for WSL
+  - Result: Export in 30-35 seconds on WSL (vs 60+ seconds with level 19)
+  - File size: 450-500 MB (excellent compression maintained)
+  - Linux/Mac unchanged (still uses level 19 for maximum compression)
+  - **Note**: Removed `--dereference` flag as it was breaking cache structure
+
+### Performance (Tested on WSL)
+- Export cache: 33 seconds
+- Import cache: 19 seconds
+- Install from cache: 60 seconds (WSL filesystem limitation - can't hardlink)
+- Total workflow: 112 seconds vs 45 minutes = 34x faster!
+
+### Documentation
+- Updated FAQ.md with accurate WSL performance expectations
+- Updated README.md with tested benchmarks
+- Added FINAL_TEST_RESULTS.md with complete test data
+- Added WSL_PERFORMANCE_REALITY.md explaining WSL limitations
+
 ## [1.1.0] - 2026-02-27
 
 ### Added

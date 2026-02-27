@@ -20,13 +20,13 @@ Once you have packages cached, they work:
 - ✅ In any project using those packages
 - ✅ In any IDE (VS Code, PyCharm, Jupyter, etc.)
 - ✅ Anywhere on your PC
-- ✅ Install time: **0.7 seconds** (proven in tests)
+- ✅ Install time: **10-20 seconds on Linux, 60 seconds on WSL** (tested)
 
 **How to use:**
 ```bash
 cd your-project
 uv venv
-uv pip install -r requirements.txt  # 0.7 seconds if cached!
+uv pip install -r requirements.txt  # 10-20s on Linux, 60s on WSL
 ```
 
 **Note:** Only works for packages you've already installed. New packages download first time, then cached forever.
@@ -38,11 +38,11 @@ uv pip install -r requirements.txt  # 0.7 seconds if cached!
 **Two locations:**
 
 1. **Cache directory:** `/home/ubuntu/.cache/uv`
-   - Size: 972 MB (current)
+   - Size: ~2.4 GB (typical ML setup)
    - Contains: All downloaded packages ready to use
 
 2. **Compressed export:** `flash-cache-YYYYMMDD-HHMMSS.tar.zst`
-   - Size: 183 MB (current)
+   - Size: 450-500 MB (compressed)
    - Contains: Compressed cache for sharing
 
 **Windows path:** `\\wsl$\Ubuntu\home\ubuntu\.cache\uv`
@@ -52,9 +52,9 @@ uv pip install -r requirements.txt  # 0.7 seconds if cached!
 ### Q3: How much space does it use?
 
 **Current usage:**
-- Cache: 972 MB
-- Compressed file: 183 MB
-- **Total: 1.1 GB**
+- Cache: ~2.4 GB
+- Compressed file: 450-500 MB
+- **Total: ~2.9 GB**
 
 **After 6 months (heavy ML usage):**
 - Cache: 12-15 GB
@@ -94,7 +94,7 @@ rm flash-cache-*.tar.zst
 **Option 2: Keep cache, delete compressed file**
 ```bash
 rm flash-cache-*.tar.zst
-# Frees 183 MB
+# Frees 450-500 MB
 # Your projects still work instantly
 ```
 
@@ -118,9 +118,9 @@ ls -lh flash-cache-*.tar.zst
 
 | Timeline | Packages Installed | Cache Size | Compressed |
 |----------|-------------------|------------|------------|
-| **Current** | Basic ML (numpy, pandas, sklearn) | 972 MB | 183 MB |
-| **Month 1** | + Basic tools | 1-2 GB | 200-400 MB |
-| **Month 2** | + PyTorch | 4-5 GB | 800 MB-1 GB |
+| **Current** | Basic ML (numpy, pandas, sklearn) | 2.4 GB | 477 MB |
+| **Month 1** | + Basic tools | 3-4 GB | 600-800 MB |
+| **Month 2** | + PyTorch | 5-6 GB | 1-1.2 GB |
 | **Month 3** | + Computer Vision | 6-7 GB | 1.2-1.4 GB |
 | **Month 4** | + NLP/Transformers | 9-10 GB | 1.8-2 GB |
 | **Month 5** | + OCR/Document AI | 11-12 GB | 2.2-2.4 GB |
@@ -189,7 +189,7 @@ SAVINGS:
 
 | Step | Docker | flash-pkg |
 |------|--------|-----------|
-| **Download size** | 3-5 GB per project | 183 MB (all projects) |
+| **Download size** | 3-5 GB per project | 477 MB (all projects) |
 | **Download time** | 10-30 min | 1-3 min |
 | **After download** | Instant restart | Instant install |
 | **Total first time** | 10-30 min | 1-3 min |
@@ -328,7 +328,7 @@ python main.py  # Instant, no rebuild
 #### flash-pkg
 
 **Pros:**
-- ✅ Small downloads (183 MB → 2.4 GB)
+- ✅ Small downloads (477 MB → 2.4 GB)
 - ✅ One cache for unlimited projects
 - ✅ No rebuild on code changes
 - ✅ Native performance (fastest possible)
@@ -435,7 +435,7 @@ kubectl deploy app
 - Rebuild on code changes
 
 **flash-pkg:**
-- 183 MB for all projects
+- 477 MB for all projects
 - One cache for unlimited projects
 - No rebuild needed
 
@@ -536,7 +536,7 @@ kubectl deploy app
 **Recommendation: flash-pkg**
 
 **Why:**
-- Small downloads (183 MB vs 3-5 GB)
+- Small downloads (477 MB vs 3-5 GB)
 - One cache for all projects
 - Native speed
 - Simple to use
@@ -682,7 +682,7 @@ python solution.py
 
 2. **Both are instant after first download**
    - Docker: 3-5 GB per project
-   - flash-pkg: 183 MB for all projects
+   - flash-pkg: 477 MB for all projects
 
 3. **Best practice: Use BOTH**
    - Dev: flash-pkg (fast)

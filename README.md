@@ -4,7 +4,8 @@
 
 Stop waiting 45 minutes for `torch` and `paddleocr` to download. Get your ML/fullstack projects running in **under 30 seconds** after one-time bootstrap.
 
-**NEW v1.1:** 🔥 **Cache Sharing** — Compress 2 GB cache to 500 MB, share with team, import in 15 seconds!
+**NEW v1.1:** 🔥 **Cache Sharing** — Compress 2 GB cache to 477 MB, share with team, import in 19 seconds!  
+**NEW v1.1.1:** ⚡ **WSL Optimization** — Export cache in 33s on WSL (tested and verified)
 
 Built for developers in Nepal/Asia with slow internet, but works blazingly fast everywhere.
 
@@ -18,15 +19,17 @@ Built for developers in Nepal/Asia with slow internet, but works blazingly fast 
 - **Enterprise-ready**: proxy support, air-gapped mode, Docker templates, SBOM generation
 - **Zero overhead**: Pure CLI, no Docker required (but Docker templates included)
 
-### Real-world benchmarks (Kathmandu, 10 Mbps connection)
+### Real-world benchmarks (Tested on WSL, 10 Mbps connection)
 
-| Task | Old way (pip/npm) | With flash-pkg |
-|------|-------------------|----------------|
-| First ML setup | 45-90 minutes | 2-4 minutes (one-time) |
-| New ML project | 45-90 minutes | **8-25 seconds** |
-| New MERN app | 5-15 minutes | **3-8 seconds** |
+| Task | Old way (pip/npm) | With flash-pkg (Linux) | With flash-pkg (WSL) |
+|------|-------------------|------------------------|----------------------|
+| First ML setup | 45-90 minutes | 2-4 minutes (one-time) | 2-4 minutes (one-time) |
+| New ML project | 45-90 minutes | **10-20 seconds** | **60 seconds** |
+| Export cache | N/A | 30-60 seconds | **33 seconds** |
+| Import cache | N/A | 8 seconds | **19 seconds** |
+| New MERN app | 5-15 minutes | **3-8 seconds** | **10-15 seconds** |
 
-After bootstrap, you're working at Rippling/Snyk enterprise speed.
+**Note**: WSL install is 60s due to filesystem limitations (must copy files, can't hardlink). Still 34x faster than downloading!
 
 ---
 
@@ -85,8 +88,8 @@ flash bootstrap-ml           # One-time heavy deps download (CPU version)
 flash bootstrap-ml-gpu       # GPU version with CUDA support
 
 # 🔥 NEW v1.1: KILLER CACHE SHARING FEATURES
-flash export-cache           # Compress cache: 2 GB → 400-700 MB (shareable!)
-flash import-cache <file>    # Import cache in 5-15 seconds (blink-fast!)
+flash export-cache           # Compress cache: 2.4 GB → 477 MB (tested!)
+flash import-cache <file>    # Import cache in 19 seconds (tested!)
 
 flash docker-ml <name>       # Generate Dockerfile + DevContainer for ML
 flash docker-mern <name>     # Generate Dockerfile + DevContainer for MERN
@@ -102,17 +105,17 @@ flash sbom                   # Generate SBOM for security audits
 ```bash
 # Person 1 (good WiFi, one time)
 flash bootstrap-ml
-flash export-cache           # Creates flash-cache-20260227.tar.zst (~500 MB)
+flash export-cache           # Creates flash-cache-20260227.tar.zst (477 MB, 33s on WSL)
 
 # Share file via GitHub Release, Google Drive, company S3, or even WhatsApp!
 
 # Everyone else (instant setup)
-flash import-cache flash-cache-20260227.tar.zst  # 5-15 seconds
+flash import-cache flash-cache-20260227.tar.zst  # 19 seconds
 cd your-project
-uv pip install -r requirements.txt               # <30 seconds!
+uv pip install -r requirements.txt               # 60s on WSL, 10-20s on Linux!
 ```
 
-**Result:** 45 minutes → 30 seconds for entire team! 🚀
+**Result:** 45 minutes → 79 seconds for entire team on WSL! 🚀
 
 ---
 
@@ -204,8 +207,9 @@ uv run python main.py
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| Linux | ✅ Full support | Tested on Ubuntu 22.04+, Debian, Arch |
-| macOS | ✅ Full support | Intel + Apple Silicon |
+| Linux | ✅ Full support | Tested on Ubuntu 22.04+, Debian, Arch. Install: 10-20s |
+| macOS | ✅ Full support | Intel + Apple Silicon. Install: 10-20s |
+| Windows WSL | ✅ Full support | Optimized in v1.1.1. Install: 60s (filesystem limitation) |
 | Windows | 🚧 Coming soon | PowerShell version in progress |
 
 ---

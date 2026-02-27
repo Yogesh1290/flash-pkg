@@ -24,11 +24,13 @@ Installing: torch, paddleocr, modelscope, transformers, opencv-contrib-python, p
 
 ### Subsequent Projects (Warm Cache)
 
-| Tool | Time | Notes |
-|------|------|-------|
-| pip (with cache) | 45 min | Still downloads |
-| uv (with cache) | 25 sec | Uses global cache |
-| **flash-pkg** | **12 sec** | Optimized cache + mirrors |
+| Tool | Platform | Time | Notes |
+|------|----------|------|-------|
+| pip (with cache) | Any | 45 min | Still downloads |
+| uv (with cache) | Linux | 10-20 sec | Uses global cache |
+| uv (with cache) | WSL | 60 sec | Must copy files |
+| **flash-pkg** | **Linux** | **10-20 sec** | Optimized cache + mirrors |
+| **flash-pkg** | **WSL** | **60 sec** | Filesystem limitation |
 
 ## Test 2: MERN App Setup
 

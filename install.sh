@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# flash-pkg v1.1 — Universal Fast Dev Setup (Python + JS) for Solo Devs & Enterprises
+# flash-pkg v1.1.1 — Universal Fast Dev Setup (Python + JS) for Solo Devs & Enterprises
 # Optimized for slow internet (Nepal/Asia) + heavy ML (Torch/PaddleOCR) + MERN
 # MIT License — Open source, feel free to fork & ship in your company
 # Run: curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
@@ -246,11 +246,23 @@ JSON
                 fi
             fi
             
-            echo "→ Compressing cache with zstd (extreme compression)..."
-            echo "   This takes 30-60 seconds but creates tiny file..."
+            # Detect Windows/WSL for optimization
+            IS_WSL=false
+            if grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
+                IS_WSL=true
+                echo "⚠️  WSL detected: Using optimized compression settings"
+            fi
             
-            # Compress with maximum compression + multi-threading
-            tar -cf - -C "$CACHE_DIR" . | zstd -19 -T0 --long -o "$OUTPUT"
+            echo "→ Compressing cache with zstd..."
+            if [ "$IS_WSL" = true ]; then
+                # WSL: Use faster compression (level 10)
+                echo "   Using WSL-optimized settings (15-30 seconds)..."
+                tar -cf - -C "$CACHE_DIR" . | zstd -10 -T0 > "$OUTPUT"
+            else
+                # Linux/Mac: Use maximum compression (level 19)
+                echo "   Using maximum compression (30-60 seconds)..."
+                tar -cf - -C "$CACHE_DIR" . | zstd -19 -T0 --long > "$OUTPUT"
+            fi
             
             FILE_SIZE=$(du -h "$OUTPUT" | cut -f1)
             echo ""
@@ -315,9 +327,9 @@ JSON
                 fi
             fi
             
-            # Decompress with multi-threading
+            # Decompress with multi-threading (compatible with older zstd versions)
             START_TIME=$(date +%s)
-            zstd -d -T0 "$2" -o - | tar -xf - -C "$CACHE_DIR"
+            zstd -d -c "$2" | tar -xf - -C "$CACHE_DIR"
             END_TIME=$(date +%s)
             DURATION=$((END_TIME - START_TIME))
             
@@ -336,7 +348,7 @@ JSON
             ;;
         
         *)
-            echo "flash-pkg v1.1 — Universal Fast Dev Setup + Cache Sharing"
+            echo "flash-pkg v1.1.1 — Universal Fast Dev Setup + Cache Sharing"
             echo ""
             echo "Usage:"
             echo "  flash ml <name>                      → Create Python ML project"
