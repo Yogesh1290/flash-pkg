@@ -64,20 +64,48 @@ bash quick-test.sh
 
 ### 3. Bootstrap once (run on good WiFi)
 
+**For Python/ML projects:**
 ```bash
 flash bootstrap-ml  # Pre-caches common ML packages (torch, paddleocr, etc.)
 # OR
 flash bootstrap-custom your-project/requirements.txt  # Pre-cache YOUR dependencies
 ```
 
-This downloads packages to uv's global cache. Takes 1-4 minutes depending on your connection. **You only do this once ever.**
+**For JavaScript/MERN projects:**
+```bash
+flash bootstrap-mern  # Pre-caches React, Next.js, Vue, TypeScript, Vite
+```
+
+This downloads packages to cache. Takes 1-4 minutes depending on your connection. **You only do this once ever.**
 
 ### 4. Use with ANY project
 
+**Python:**
 ```bash
 # Your existing project
 cd my-ai-project
 uv venv
+uv pip install -r requirements.txt  # <30 seconds!
+
+# Or create new project
+flash ml my-new-project
+cd my-new-project
+uv add numpy pandas scikit-learn  # Add any packages you want
+```
+
+**JavaScript:**
+```bash
+# Your existing project
+cd my-react-app
+bun install  # <30 seconds!
+
+# Or create new project
+flash mern my-new-app
+cd my-new-app
+bun add axios react-router-dom  # Add any packages you want
+```
+
+Every new project after bootstrap: **under 30 seconds**. No more waiting.
 uv pip install -r requirements.txt  # <30 seconds!
 
 # Or create new project
@@ -317,6 +345,9 @@ Made with ❤️ for developers who are tired of waiting.
 **Q: Does it work for ANY project on ANY IDE?**  
 A: YES! Once cached, packages work in VS Code, PyCharm, Jupyter, or any IDE. Just use `uv pip install -r requirements.txt`.
 
+**Q: How is this different from Docker?**  
+A: Docker is for production deployment. flash-pkg is for development speed. Use both! See [Docker Comparison](docs/DOCKER_COMPARISON.md) for details.
+
 **Q: Where is the cache saved?**  
 A: `~/.cache/uv` (about 1 GB for typical ML setup). Safe to delete anytime.
 
@@ -342,6 +373,8 @@ A: uv is compatible. You can migrate or use both. See [uv migration guide](https
 A: Yes. Rippling, Snyk, Plotly already use uv in production. This adds convenience + regional optimization.
 
 **📖 See [FAQ.md](FAQ.md) for complete Q&A (20+ questions answered)**
+
+**🐳 See [Docker Comparison](docs/DOCKER_COMPARISON.md) for Docker vs flash-pkg**
 
 ---
 

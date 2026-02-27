@@ -23,7 +23,8 @@ flash-pkg is production-ready and used in spirit by companies like Snyk, Ripplin
 curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
 
 # One-time bootstrap (can be done on shared cache server)
-flash bootstrap-ml
+flash bootstrap-ml    # For Python/ML projects
+flash bootstrap-mern  # For JavaScript/MERN projects
 ```
 
 ### Option 2: Air-Gapped / Offline
@@ -31,6 +32,7 @@ flash bootstrap-ml
 ```bash
 # On a machine with internet access
 flash bootstrap-ml
+flash bootstrap-mern
 tar -czf flash-cache.tar.gz ~/.cache/uv ~/.bun
 
 # Copy flash-cache.tar.gz to internal file share
@@ -46,7 +48,10 @@ tar -xzf flash-cache.tar.gz -C ~/
 # Set up internal PyPI mirror (Artifactory, Nexus, etc.)
 # Then configure flash-pkg to use it
 
+# Python
 uv pip config set global.index-url https://artifactory.company.com/pypi/simple
+
+# JavaScript
 bun config set registry https://artifactory.company.com/npm/
 ```
 
@@ -96,10 +101,10 @@ cat ~/.cache/uv/logs/latest.log
 
 ## CI/CD Integration
 
-### GitHub Actions
+### GitHub Actions (Python)
 
 ```yaml
-name: Test
+name: Test Python
 
 on: [push, pull_request]
 
@@ -129,7 +134,40 @@ jobs:
         run: uv run pytest
 ```
 
-### GitLab CI
+### GitHub Actions (JavaScript)
+
+```yaml
+name: Test JavaScript
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install flash-pkg
+        run: |
+          curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
+          source ~/.bashrc
+      
+      - name: Bootstrap (cached)
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+      
+      - name: Install dependencies
+        run: |
+          flash bootstrap-mern
+          bun install
+      
+      - name: Run tests
+        run: bun test
+```
+
+### GitLab CI (Python)
 
 ```yaml
 test:
@@ -146,16 +184,39 @@ test:
       - ~/.cache/uv
 ```
 
+### GitLab CI (JavaScript)
+
+```yaml
+test:
+  image: ubuntu:22.04
+  before_script:
+    - curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
+    - source ~/.bashrc
+    - flash bootstrap-mern
+  script:
+    - bun install
+    - bun test
+  cache:
+    paths:
+      - ~/.bun/install/cache
+```
+
 ## Docker for Teams
 
 Generate standardized Docker environments:
 
+**Python/ML:**
 ```bash
 flash docker-ml company-ml-project
 ```
 
+**JavaScript/MERN:**
+```bash
+flash docker-mern company-web-app
+```
+
 This creates:
-- `Dockerfile` with uv + all ML deps pre-installed
+- `Dockerfile` with uv/Bun + all deps pre-installed
 - `.devcontainer/devcontainer.json` for VS Code Dev Containers
 
 Team members just:
@@ -166,30 +227,55 @@ code company-ml-project
 
 ## Monorepo Support
 
+**Python workspace:**
 ```bash
-# Create monorepo structure
 mkdir my-monorepo && cd my-monorepo
-
-# Python workspace
 uv init --workspace
 uv add --workspace torch paddleocr
+```
 
-# JS workspace
+**JavaScript workspace:**
+```bash
+mkdir my-monorepo && cd my-monorepo
 bun init
 bun add -D turbo
+```
+
+**Full-stack monorepo:**
+```bash
+my-monorepo/
+├── backend/          # Python/FastAPI
+│   └── requirements.txt
+├── frontend/         # React/TypeScript
+│   └── package.json
+└── shared/           # Shared types/utils
 
 # Both use flash-pkg's cached deps
+flash bootstrap-ml    # Cache Python deps
+flash bootstrap-mern  # Cache JS deps
 ```
 
 ## Cost Savings
 
 Example: 50 developers, 5 new projects per week
 
+**Python/ML Projects:**
+
 | Metric | Before | After | Savings |
 |--------|--------|-------|---------|
 | Setup time per project | 45 min | 30 sec | 44.5 min |
 | Weekly time saved | 3,712 min | — | 61.8 hours |
 | Monthly cost saved (at $50/hr) | — | — | $12,360 |
+
+**JavaScript/MERN Projects:**
+
+| Metric | Before | After | Savings |
+|--------|--------|-------|---------|
+| Setup time per project | 15 min | 10 sec | 14.8 min |
+| Weekly time saved | 1,233 min | — | 20.5 hours |
+| Monthly cost saved (at $50/hr) | — | — | $4,100 |
+
+**Combined savings: $16,460/month for 50 developers!**
 
 ## Support
 

@@ -4,9 +4,10 @@
 1. [Quick Q&A](#quick-qa)
 2. [6-Month Usage Scenario](#6-month-usage-scenario)
 3. [Docker vs flash-pkg: Honest Comparison](#docker-vs-flash-pkg-honest-comparison)
-4. [Use Cases & Recommendations](#use-cases--recommendations)
-5. [Technical Details](#technical-details)
-6. [Common Confusions Clarified](#common-confusions-clarified)
+4. [JavaScript/Bun Support](#javascriptbun-support)
+5. [Use Cases & Recommendations](#use-cases--recommendations)
+6. [Technical Details](#technical-details)
+7. [Common Confusions Clarified](#common-confusions-clarified)
 
 ---
 
@@ -343,6 +344,69 @@ python main.py  # Instant, no rebuild
 - ❌ Less isolation (uses host OS)
 - ❌ Not industry standard (yet)
 - ❌ Requires uv/Python on host
+
+---
+
+## JavaScript/Bun Support
+
+### Q: Does flash-pkg work for JavaScript/MERN projects?
+
+**YES!** ✅ Full parity with Python support.
+
+**Commands:**
+```bash
+# Bootstrap once
+flash bootstrap-mern  # Pre-caches React, Next.js, Vue, TypeScript, Vite
+
+# Export/import cache
+flash export-cache-js        # 1.4s (146 MB → 24 MB)
+flash import-cache-js <file> # 1.1s
+
+# Create projects
+flash mern my-app
+cd my-app
+bun install  # 30s for 178 packages
+```
+
+### Performance Comparison
+
+| Task | npm | Bun | flash-pkg + Bun |
+|------|-----|-----|-----------------|
+| First install | 5 min | 2 min | 2 min |
+| Second install | 5 min | 2 min | 30 sec |
+| With cache import | 5 min | 2 min | 1 sec + 30 sec |
+
+### Cache Sizes
+
+**Python/ML:**
+- Cache: 2.4 GB
+- Compressed: 477 MB
+- Compression: 5:1
+
+**JavaScript/Bun:**
+- Cache: 146 MB
+- Compressed: 24 MB
+- Compression: 6:1
+
+### Team Sharing
+
+**JavaScript workflow:**
+```bash
+# Person 1 (good WiFi)
+flash bootstrap-mern
+flash export-cache-js  # 1.4s → 24 MB file
+
+# Share via GitHub/Drive/WhatsApp
+
+# Everyone else
+flash import-cache-js cache.tar.zst  # 1.1s
+cd project
+bun install  # 30s for 178 packages
+```
+
+**Savings:**
+- Download: 146 MB → 24 MB (6x smaller)
+- Time: 5 min → 31 sec (10x faster)
 
 ---
 

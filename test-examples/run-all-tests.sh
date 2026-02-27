@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run all flash-pkg tests
-# This script tests all example projects
+# This script tests all example projects (Python + JavaScript)
 
 set -e
 
@@ -22,6 +22,17 @@ if ! command -v flash &> /dev/null; then
 fi
 
 echo -e "${GREEN}✅ flash command found${NC}"
+echo ""
+
+# Check if bun is installed
+if ! command -v bun &> /dev/null; then
+    echo -e "${YELLOW}⚠️  bun not found - JavaScript tests will be skipped${NC}"
+    echo "Install: curl -fsSL https://bun.sh/install | bash"
+    SKIP_JS=true
+else
+    echo -e "${GREEN}✅ bun command found${NC}"
+    SKIP_JS=false
+fi
 echo ""
 
 # Test 1: Simple ML Project
@@ -104,6 +115,26 @@ else
 fi
 
 echo ""
+
+# Test 4: JavaScript React Project
+if [ "$SKIP_JS" = false ]; then
+    echo "Test 4: React App (JavaScript/Bun)"
+    echo "-----------------------------------"
+    cd ../simple-react-app
+    
+    echo "Installing dependencies..."
+    start_time=$(date +%s)
+    bun install
+    end_time=$(date +%s)
+    elapsed=$((end_time - start_time))
+    
+    echo -e "${GREEN}✅ React test passed in ${elapsed}s${NC}"
+    echo ""
+else
+    echo -e "${YELLOW}⏭️  Skipping JavaScript tests (bun not installed)${NC}"
+    echo ""
+fi
+
 echo "=================================="
 echo -e "${GREEN}🎉 All tests completed!${NC}"
 echo ""
@@ -111,9 +142,14 @@ echo "Summary:"
 echo "- Simple ML: ✅"
 echo "- FastAPI: ✅"
 echo "- Heavy ML: ${REPLY}"
+if [ "$SKIP_JS" = false ]; then
+    echo "- React App: ✅"
+else
+    echo "- React App: ⏭️  (skipped)"
+fi
 echo ""
 echo "Next steps:"
 echo "1. Run 'flash bootstrap-ml' (if not done)"
-echo "2. Test your own project"
-echo "3. Push to GitHub"
+echo "2. Run 'flash bootstrap-mern' (for JavaScript)"
+echo "3. Test your own project"
 echo "4. Share your results!"

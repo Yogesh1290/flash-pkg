@@ -76,9 +76,9 @@ irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | ie
 powershell -Command "irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex"
 ```
 
-## For Your Existing ML Project
+## For Your Existing Projects
 
-### Scenario: You have a project with requirements.txt
+### Python/ML Project with requirements.txt
 
 ```bash
 # Your project
@@ -96,6 +96,23 @@ pip install -r requirements.txt  # ☕☕☕
 flash bootstrap-ml  # Once, 2-4 min
 uv venv
 uv pip install -r requirements.txt  # ⚡ 15 seconds!
+```
+
+### JavaScript/React Project with package.json
+
+```bash
+# Your project
+cd my-react-app
+cat package.json
+# react, react-dom, vite, typescript
+# ... 100+ deps
+
+# Old way (5-15 minutes)
+npm install  # ☕☕
+
+# New way with flash-pkg
+flash bootstrap-mern  # Once, 2-4 min
+bun install  # ⚡ 30 seconds!
 ```
 
 ### Every Time After Bootstrap
