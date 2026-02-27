@@ -95,15 +95,21 @@ Every new project after bootstrap: **under 30 seconds**. No more waiting.
 ## Commands
 
 ```bash
+# Python/ML Commands
 flash ml <name>              # Create Python ML project
-flash mern <name>            # Create MERN app (Vite + React + TypeScript)
 flash bootstrap-ml           # One-time heavy deps download (CPU version)
 flash bootstrap-ml-gpu       # GPU version with CUDA support
+flash bootstrap-custom <file> # Pre-cache YOUR custom requirements.txt
+flash export-cache           # Compress Python cache: 2.4 GB → 477 MB (tested!)
+flash import-cache <file>    # Import Python cache in 19 seconds (tested!)
 
-# 🔥 NEW v1.1: KILLER CACHE SHARING FEATURES
-flash export-cache           # Compress cache: 2.4 GB → 477 MB (tested!)
-flash import-cache <file>    # Import cache in 19 seconds (tested!)
+# JavaScript/MERN Commands
+flash mern <name>            # Create MERN app (Vite + React + TypeScript)
+flash bootstrap-mern         # Pre-cache React, Next.js, Vue, TypeScript, Vite
+flash export-cache-js        # Compress JavaScript cache: 146 MB → 24 MB (tested!)
+flash import-cache-js <file> # Import JavaScript cache in 1 second (tested!)
 
+# Enterprise
 flash docker-ml <name>       # Generate Dockerfile + DevContainer for ML
 flash docker-mern <name>     # Generate Dockerfile + DevContainer for MERN
 flash enterprise-install     # Show company rollout guide
@@ -114,7 +120,7 @@ flash sbom                   # Generate SBOM for security audits
 
 **The Problem:** Your team has slow internet. Everyone waits 45 minutes to download torch, paddleocr, etc.
 
-**The Solution (Linux/macOS/WSL):**
+**Python Solution (Linux/macOS/WSL):**
 ```bash
 # Person 1 (good WiFi, one time)
 flash bootstrap-ml
@@ -128,21 +134,42 @@ cd your-project
 uv pip install -r requirements.txt               # 60s on WSL, 10-20s on Linux!
 ```
 
+**JavaScript Solution (Linux/macOS/WSL):**
+```bash
+# Person 1 (good WiFi, one time)
+flash bootstrap-mern
+flash export-cache-js        # Creates flash-cache-js-20260227.tar.zst (24 MB, 1.4s!)
+
+# Share file via GitHub Release, Google Drive, company S3, or even WhatsApp!
+
+# Everyone else (instant setup)
+flash import-cache-js flash-cache-js-20260227.tar.zst  # 1 second
+cd your-project
+bun install                  # 30s for 178 packages!
+```
+
 **Windows PowerShell:**
 ```powershell
-# Person 1 (good WiFi, one time)
+# Python
 flash bootstrap-ml
 flash export-cache           # Creates flash-cache-20260227.zip
+
+# JavaScript
+flash bootstrap-mern
+flash export-cache-js        # Creates flash-cache-js-20260227.zip
 
 # Share file via GitHub Release, Google Drive, company S3, or even WhatsApp!
 
 # Everyone else (instant setup)
 flash import-cache flash-cache-20260227.zip
+flash import-cache-js flash-cache-js-20260227.zip
 cd your-project
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt  # OR  bun install
 ```
 
-**Result:** 45 minutes → 79 seconds for entire team on WSL! 🚀
+**Result:** 
+- Python: 45 minutes → 79 seconds for entire team on WSL! 🚀
+- JavaScript: First install → 30 seconds for 178 packages! ⚡
 
 ---
 

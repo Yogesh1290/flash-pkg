@@ -148,7 +148,7 @@ This warning is NORMAL on WSL. It's not an error - just informing you that files
 
 **YES!** This is a killer feature for teams:
 
-**Linux/macOS/WSL:**
+**Python (Linux/macOS/WSL):**
 ```bash
 # On one machine (good WiFi)
 flash bootstrap-ml
@@ -162,16 +162,32 @@ flash import-cache flash-cache-YYYYMMDD.tar.zst  # 19 seconds
 # Now everyone has instant setup!
 ```
 
+**JavaScript (Linux/macOS/WSL):**
+```bash
+# On one machine (good WiFi)
+flash bootstrap-mern
+flash export-cache-js  # Creates flash-cache-js-YYYYMMDD.tar.zst (24 MB!)
+
+# Share file via GitHub Release, Google Drive, S3, etc.
+
+# On other machines:
+flash import-cache-js flash-cache-js-YYYYMMDD.tar.zst  # 1 second!
+
+# Now everyone has instant setup!
+```
+
 **Windows PowerShell:**
 ```powershell
 # On one machine (good WiFi)
-flash bootstrap-ml
-flash export-cache  # Creates flash-cache-YYYYMMDD.zip
+flash bootstrap-ml  # OR  flash bootstrap-mern
+flash export-cache  # OR  flash export-cache-js (creates .zip)
 
 # Share file via GitHub Release, Google Drive, OneDrive, etc.
 
 # On other machines:
 flash import-cache flash-cache-YYYYMMDD.zip
+# OR
+flash import-cache-js flash-cache-js-YYYYMMDD.zip
 
 # Now everyone has instant setup!
 ```
@@ -403,11 +419,34 @@ uv pip install -r requirements.txt
 - Uses .zip format for cache (Windows-native)
 - Fast mirror selection (1-2 seconds)
 - All flash commands work
-- Export/import cache supported
+- Export/import cache supported for both Python and JavaScript
 
 ---
 
-### Q22: Where can I get help?
+### Q22: Does JavaScript/Bun cache work like Python?
+
+**YES! Full parity (v1.2.0)!** ✅
+
+**JavaScript Cache Features:**
+- `flash bootstrap-mern` - Pre-cache React, Next.js, Vue, TypeScript, Vite
+- `flash export-cache-js` - Compress cache (146 MB → 24 MB!)
+- `flash import-cache-js` - Import cache in 1 second
+
+**Performance (Tested on WSL):**
+- Export: 1.4 seconds (6x compression!)
+- Import: 1.1 seconds
+- Install: 30 seconds for 178 packages
+- Cache file: Only 24 MB (tiny!)
+
+**Comparison:**
+- Python cache: 477 MB compressed
+- JavaScript cache: 24 MB compressed (20x smaller!)
+
+Both ecosystems now have the same instant setup experience! 🚀
+
+---
+
+### Q23: Where can I get help?
 
 **Resources:**
 - GitHub Issues: https://github.com/Yogesh1290/flash-pkg/issues

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# flash-pkg v1.1.1 — Universal Fast Dev Setup (Python + JS) for Solo Devs & Enterprises
+# flash-pkg v1.2.0 — Universal Fast Dev Setup (Python + JS) for Solo Devs & Enterprises
 # Optimized for slow internet (Nepal/Asia) + heavy ML (Torch/PaddleOCR) + MERN
 # MIT License — Open source, feel free to fork & ship in your company
 # Run: curl -sSL https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.sh | bash
@@ -347,20 +347,180 @@ JSON
             echo "   uv pip install -r requirements.txt  # ← INSTANT!"
             ;;
         
-        *)
-            echo "flash-pkg v1.1.1 — Universal Fast Dev Setup + Cache Sharing"
+        bootstrap-mern)
+            echo "🚀 One-time MERN/React bootstrap (run on good WiFi once)"
+            echo "This downloads common JavaScript packages to Bun cache."
+            echo "Downloading: React, Next.js, Vue, TypeScript, Vite, TailwindCSS..."
+            
+            # Create temp directory for bootstrap
+            TEMP_DIR=$(mktemp -d 2>/dev/null || echo "/tmp/flash-bootstrap-$$")
+            mkdir -p "$TEMP_DIR"
+            cd "$TEMP_DIR"
+            
+            # Bootstrap React + common deps
+            echo "→ Bootstrapping React ecosystem..."
+            bun create vite@latest react-bootstrap -- --template react-ts
+            cd react-bootstrap
+            bun add react-router-dom @tanstack/react-query axios zustand
+            bun add -d tailwindcss postcss autoprefixer
+            
+            # Bootstrap Next.js
+            cd "$TEMP_DIR"
+            echo "→ Bootstrapping Next.js..."
+            bun create next-app@latest next-bootstrap --typescript --tailwind --app --no-src-dir --import-alias "@/*"
+            cd next-bootstrap
+            bun add @tanstack/react-query axios zustand
+            
+            # Bootstrap Vue
+            cd "$TEMP_DIR"
+            echo "→ Bootstrapping Vue..."
+            bun create vite@latest vue-bootstrap -- --template vue-ts
+            cd vue-bootstrap
+            bun add vue-router pinia axios
+            
+            # Cleanup
+            cd ~
+            rm -rf "$TEMP_DIR"
+            
             echo ""
-            echo "Usage:"
+            echo "✅ Bootstrap done! Every new MERN project now <10s forever."
+            echo "Note: You can still install ANY package — this just pre-caches common ones."
+            echo ""
+            echo "🚀 Try it:"
+            echo "   flash mern my-app  # ← Creates in seconds!"
+            ;;
+        
+        export-cache-js)
+            echo "🚀 Exporting Bun cache (JavaScript packages)"
+            echo "This creates a shareable file for instant JavaScript setup!"
+            echo ""
+            
+            # Bun cache location
+            if [ -d "$HOME/.bun/install/cache" ]; then
+                BUN_CACHE="$HOME/.bun/install/cache"
+            elif [ -d "$HOME/Library/Caches/bun" ]; then
+                BUN_CACHE="$HOME/Library/Caches/bun"
+            else
+                echo "❌ No Bun cache found. Run 'flash bootstrap-mern' first."
+                return 1
+            fi
+            
+            OUTPUT="flash-cache-js-$(date +%Y%m%d-%H%M%S).tar.zst"
+            
+            # Install zstd if missing
+            if ! command -v zstd >/dev/null 2>&1; then
+                echo "→ Installing zstd (one-time)..."
+                if command -v apt-get >/dev/null 2>&1; then
+                    sudo apt-get install -y zstd
+                elif command -v brew >/dev/null 2>&1; then
+                    brew install zstd
+                elif command -v yum >/dev/null 2>&1; then
+                    sudo yum install -y zstd
+                else
+                    echo "⚠️  Please install zstd manually"
+                    return 1
+                fi
+            fi
+            
+            # Detect Windows/WSL
+            IS_WSL=false
+            if grep -qi microsoft /proc/version 2>/dev/null || grep -qi wsl /proc/version 2>/dev/null; then
+                IS_WSL=true
+                echo "⚠️  WSL detected: Using optimized compression"
+            fi
+            
+            echo "→ Compressing Bun cache..."
+            if [ "$IS_WSL" = true ]; then
+                tar -cf - -C "$BUN_CACHE" . | zstd -10 -T0 > "$OUTPUT"
+            else
+                tar -cf - -C "$BUN_CACHE" . | zstd -19 -T0 --long > "$OUTPUT"
+            fi
+            
+            FILE_SIZE=$(du -h "$OUTPUT" | cut -f1)
+            echo ""
+            echo "✅ DONE! JavaScript cache exported to: $OUTPUT"
+            echo "   Size: $FILE_SIZE"
+            echo ""
+            echo "🎁 Share with your team:"
+            echo "   flash import-cache-js $OUTPUT"
+            echo "   Then every MERN project is <10 seconds!"
+            ;;
+        
+        import-cache-js)
+            if [ -z "$2" ]; then
+                echo "Usage: flash import-cache-js <cache-file.tar.zst>"
+                echo ""
+                echo "Example:"
+                echo "  flash import-cache-js flash-cache-js-20260227.tar.zst"
+                return 1
+            fi
+            
+            if [ ! -f "$2" ]; then
+                echo "❌ File not found: $2"
+                return 1
+            fi
+            
+            echo "🚀 Importing Bun cache..."
+            
+            # Bun cache location
+            if [ -d "$HOME/.bun/install/cache" ]; then
+                BUN_CACHE="$HOME/.bun/install/cache"
+            elif [ -d "$HOME/Library/Caches/bun" ]; then
+                BUN_CACHE="$HOME/Library/Caches/bun"
+            else
+                BUN_CACHE="$HOME/.bun/install/cache"
+                mkdir -p "$BUN_CACHE"
+            fi
+            
+            # Check if zstd is installed
+            if ! command -v zstd >/dev/null 2>&1; then
+                echo "→ Installing zstd (one-time)..."
+                if command -v apt-get >/dev/null 2>&1; then
+                    sudo apt-get install -y zstd
+                elif command -v brew >/dev/null 2>&1; then
+                    brew install zstd
+                elif command -v yum >/dev/null 2>&1; then
+                    sudo yum install -y zstd
+                else
+                    echo "⚠️  Please install zstd manually"
+                    return 1
+                fi
+            fi
+            
+            START_TIME=$(date +%s)
+            zstd -d -c "$2" | tar -xf - -C "$BUN_CACHE"
+            END_TIME=$(date +%s)
+            DURATION=$((END_TIME - START_TIME))
+            
+            echo ""
+            echo "✅ DONE in ${DURATION} seconds!"
+            echo ""
+            echo "🎉 JavaScript cache imported! Now you have:"
+            echo "   • All MERN packages cached (React, Next.js, Vue, etc.)"
+            echo "   • Every new project installs in <10 seconds"
+            echo ""
+            echo "🚀 Test it now:"
+            echo "   flash mern my-app  # ← INSTANT!"
+            ;;
+        
+        *)
+            echo "flash-pkg v1.2.0 — Universal Fast Dev Setup + Cache Sharing"
+            echo ""
+            echo "Python Commands:"
             echo "  flash ml <name>                      → Create Python ML project"
-            echo "  flash mern <name>                    → Create MERN app"
             echo "  flash bootstrap-ml                   → Pre-cache common ML deps (torch, paddleocr, etc.)"
             echo "  flash bootstrap-ml-gpu               → GPU version with CUDA"
             echo "  flash bootstrap-custom <file.txt>    → Pre-cache YOUR custom requirements.txt"
+            echo "  flash export-cache                   → Compress Python cache to shareable file"
+            echo "  flash import-cache <file.tar.zst>   → Import Python cache (5-15 seconds)"
             echo ""
-            echo "🔥 KILLER FEATURES (v1.1):"
-            echo "  flash export-cache                   → Compress cache to 400-700 MB file (shareable!)"
-            echo "  flash import-cache <file.tar.zst>   → Import cache in 5-15 seconds (blink-fast!)"
+            echo "JavaScript Commands:"
+            echo "  flash mern <name>                    → Create MERN/React app"
+            echo "  flash bootstrap-mern                 → Pre-cache React, Next.js, Vue, etc."
+            echo "  flash export-cache-js                → Compress JavaScript cache to shareable file"
+            echo "  flash import-cache-js <file.tar.zst> → Import JavaScript cache (5-15 seconds)"
             echo ""
+            echo "Enterprise:"
             echo "  flash docker-ml <name>               → Enterprise Docker template"
             echo "  flash docker-mern <name>             → MERN Docker template"
             echo "  flash enterprise-install             → Company rollout guide"
@@ -368,13 +528,12 @@ JSON
             echo ""
             echo "💡 flash works with ANY Python/JS project!"
             echo "   Bootstrap just pre-caches common packages for speed."
-            echo "   Use 'uv pip install -r requirements.txt' for any project."
+            echo "   Use 'uv pip install -r requirements.txt' or 'bun install' for any project."
             echo ""
             echo "🎁 Share cache with team:"
-            echo "   1. flash export-cache                # Creates ~500 MB file"
-            echo "   2. Share file (GitHub/Drive/S3)"
-            echo "   3. Team runs: flash import-cache <file>"
-            echo "   4. Everyone gets instant setup!"
+            echo "   Python:     flash export-cache → flash import-cache <file>"
+            echo "   JavaScript: flash export-cache-js → flash import-cache-js <file>"
+            echo "   Everyone gets instant setup!"
             ;;
     esac
 }
@@ -386,8 +545,8 @@ echo "🎉 flash-pkg installed successfully!"
 echo ""
 echo "⚡ Quick Start:"
 echo "  1. Reload your shell: source $SHELL_CONFIG"
-echo "  2. Run once on good WiFi: flash bootstrap-ml"
-echo "  3. Create projects instantly: flash ml my-ai-project"
+echo "  2. Python: flash bootstrap-ml  OR  JavaScript: flash bootstrap-mern"
+echo "  3. Create projects instantly: flash ml my-ai-project  OR  flash mern my-app"
 echo ""
 echo "📚 Full commands: flash"
 echo "⭐ Star the repo: https://github.com/Yogesh1290/flash-pkg"

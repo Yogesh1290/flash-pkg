@@ -2,6 +2,34 @@
 
 All notable changes to flash-pkg will be documented in this file.
 
+## [1.2.0] - 2026-02-28
+
+### Added
+- 🎉 **JavaScript/Bun Cache Support** - Full parity with Python cache features!
+  - `flash bootstrap-mern` - Pre-cache React, Next.js, Vue, TypeScript, Vite, TailwindCSS
+  - `flash export-cache-js` - Export Bun cache (146 MB → 24 MB compressed!)
+  - `flash import-cache-js` - Import Bun cache in 1 second
+  - Works on Linux, macOS, WSL, and Windows PowerShell
+  - Tested: 178 packages install in 30 seconds from cache
+
+### Performance (Tested on WSL)
+- **JavaScript Cache:**
+  - Export: 1.4 seconds (146 MB → 24 MB = 6x compression!)
+  - Import: 1.1 seconds
+  - Install: 30 seconds for 178 packages
+  - Cache file: Only 24 MB (super easy to share!)
+
+- **Python Cache (unchanged):**
+  - Export: 33 seconds (2.4 GB → 477 MB)
+  - Import: 19 seconds
+  - Install: 60 seconds (WSL filesystem limitation)
+
+### Documentation
+- Updated README.md with JavaScript cache workflow
+- Updated FAQ.md with JavaScript cache questions
+- Updated all docs to reflect full Python + JavaScript support
+- Added test example: test-examples/simple-react-app
+
 ## [1.1.1] - 2026-02-27
 
 ### Added

@@ -1,5 +1,5 @@
 # =============================================================================
-# flash-pkg v1.1.1 - Universal Fast Dev Setup (Python + JS) for Windows
+# flash-pkg v1.2.0 - Universal Fast Dev Setup (Python + JS) for Windows
 # PowerShell installer for native Windows (no WSL required)
 # MIT License - Open source, feel free to fork & ship in your company
 # Run: irm https://raw.githubusercontent.com/Yogesh1290/flash-pkg/main/install.ps1 | iex
@@ -223,6 +223,102 @@ function flash {
             Write-Host "   - Every new project installs in <30 seconds" -ForegroundColor Gray
         }
         
+        "bootstrap-mern" {
+            Write-Host "One-time MERN/React bootstrap (run on good WiFi once)" -ForegroundColor Cyan
+            Write-Host "This downloads common JavaScript packages to Bun cache." -ForegroundColor Gray
+            Write-Host "Downloading: React, Next.js, Vue, TypeScript, Vite, TailwindCSS..." -ForegroundColor Gray
+            
+            $tempDir = New-Item -ItemType Directory -Path "$env:TEMP\flash-bootstrap-$(Get-Random)" -Force
+            Push-Location $tempDir.FullName
+            
+            Write-Host "-> Bootstrapping React ecosystem..." -ForegroundColor Yellow
+            bun create vite@latest react-bootstrap -- --template react-ts
+            Set-Location react-bootstrap
+            bun add react-router-dom @tanstack/react-query axios zustand
+            bun add -d tailwindcss postcss autoprefixer
+            
+            Pop-Location
+            Push-Location $tempDir.FullName
+            
+            Write-Host "-> Bootstrapping Next.js..." -ForegroundColor Yellow
+            bun create next-app@latest next-bootstrap --typescript --tailwind --app --no-src-dir --import-alias "@/*"
+            Set-Location next-bootstrap
+            bun add @tanstack/react-query axios zustand
+            
+            Pop-Location
+            Push-Location $tempDir.FullName
+            
+            Write-Host "-> Bootstrapping Vue..." -ForegroundColor Yellow
+            bun create vite@latest vue-bootstrap -- --template vue-ts
+            Set-Location vue-bootstrap
+            bun add vue-router pinia axios
+            
+            Pop-Location
+            Remove-Item -Recurse -Force $tempDir.FullName
+            
+            Write-Host ""
+            Write-Host "Bootstrap done! Every new MERN project now <10s forever." -ForegroundColor Green
+            Write-Host "Note: You can still install ANY package - this just pre-caches common ones." -ForegroundColor Gray
+            Write-Host ""
+            Write-Host "Try it: flash mern my-app" -ForegroundColor Cyan
+        }
+        
+        "export-cache-js" {
+            Write-Host "Exporting Bun cache (JavaScript packages)" -ForegroundColor Cyan
+            Write-Host "This creates a shareable file for instant JavaScript setup!" -ForegroundColor Gray
+            Write-Host ""
+            
+            $bunCache = "$env:USERPROFILE\.bun\install\cache"
+            if (-not (Test-Path $bunCache)) {
+                Write-Host "No Bun cache found. Run 'flash bootstrap-mern' first." -ForegroundColor Red
+                return
+            }
+            
+            $output = "flash-cache-js-$(Get-Date -Format 'yyyyMMdd-HHmmss').zip"
+            
+            Write-Host "-> Compressing Bun cache..." -ForegroundColor Yellow
+            $sw = [System.Diagnostics.Stopwatch]::StartNew()
+            Compress-Archive -Path "$bunCache\*" -DestinationPath $output -CompressionLevel Optimal -Force
+            $sw.Stop()
+            
+            $fileSize = (Get-Item $output).Length / 1MB
+            Write-Host ""
+            Write-Host "DONE! JavaScript cache exported to: $output" -ForegroundColor Green
+            Write-Host "   Size: $([math]::Round($fileSize, 2)) MB" -ForegroundColor Gray
+            Write-Host "   Time: $($sw.Elapsed.TotalSeconds) seconds" -ForegroundColor Gray
+            Write-Host ""
+            Write-Host "Share with your team: flash import-cache-js $output" -ForegroundColor Cyan
+        }
+        
+        "import-cache-js" {
+            if (-not $Name) {
+                Write-Host "Usage: flash import-cache-js <cache-file.zip>" -ForegroundColor Red
+                return
+            }
+            
+            if (-not (Test-Path $Name)) {
+                Write-Host "File not found: $Name" -ForegroundColor Red
+                return
+            }
+            
+            Write-Host "Importing Bun cache..." -ForegroundColor Cyan
+            $bunCache = "$env:USERPROFILE\.bun\install\cache"
+            New-Item -ItemType Directory -Force -Path $bunCache | Out-Null
+            
+            $sw = [System.Diagnostics.Stopwatch]::StartNew()
+            Expand-Archive -Path $Name -DestinationPath $bunCache -Force
+            $sw.Stop()
+            
+            Write-Host ""
+            Write-Host "DONE in $($sw.Elapsed.TotalSeconds) seconds!" -ForegroundColor Green
+            Write-Host ""
+            Write-Host "JavaScript cache imported! Now you have:" -ForegroundColor Cyan
+            Write-Host "   - All MERN packages cached (React, Next.js, Vue, etc.)" -ForegroundColor Gray
+            Write-Host "   - Every new project installs in <10 seconds" -ForegroundColor Gray
+            Write-Host ""
+            Write-Host "Try it: flash mern my-app" -ForegroundColor Cyan
+        }
+        
         "sbom" {
             if (Test-Path "pyproject.toml") {
                 uv export --format requirements > requirements.txt
@@ -234,24 +330,28 @@ function flash {
         }
         
         default {
-            Write-Host "flash-pkg v1.1.1 - Universal Fast Dev Setup + Cache Sharing" -ForegroundColor Cyan
+            Write-Host "flash-pkg v1.2.0 - Universal Fast Dev Setup + Cache Sharing" -ForegroundColor Cyan
             Write-Host ""
-            Write-Host "Usage:" -ForegroundColor Yellow
+            Write-Host "Python Commands:" -ForegroundColor Yellow
             Write-Host "  flash ml <name>                      - Create Python ML project" -ForegroundColor Gray
-            Write-Host "  flash mern <name>                    - Create MERN app" -ForegroundColor Gray
             Write-Host "  flash bootstrap-ml                   - Pre-cache common ML deps" -ForegroundColor Gray
             Write-Host "  flash bootstrap-ml-gpu               - GPU version with CUDA" -ForegroundColor Gray
             Write-Host "  flash bootstrap-custom <file.txt>    - Pre-cache YOUR custom requirements.txt" -ForegroundColor Gray
+            Write-Host "  flash export-cache                   - Compress Python cache to shareable file" -ForegroundColor Gray
+            Write-Host "  flash import-cache <file.zip>        - Import Python cache instantly" -ForegroundColor Gray
             Write-Host ""
-            Write-Host "KILLER FEATURES:" -ForegroundColor Cyan
-            Write-Host "  flash export-cache                   - Compress cache to shareable file" -ForegroundColor Gray
-            Write-Host "  flash import-cache <file.zip>        - Import cache instantly" -ForegroundColor Gray
+            Write-Host "JavaScript Commands:" -ForegroundColor Yellow
+            Write-Host "  flash mern <name>                    - Create MERN/React app" -ForegroundColor Gray
+            Write-Host "  flash bootstrap-mern                 - Pre-cache React, Next.js, Vue, etc." -ForegroundColor Gray
+            Write-Host "  flash export-cache-js                - Compress JavaScript cache to shareable file" -ForegroundColor Gray
+            Write-Host "  flash import-cache-js <file.zip>     - Import JavaScript cache instantly" -ForegroundColor Gray
             Write-Host ""
+            Write-Host "Enterprise:" -ForegroundColor Yellow
             Write-Host "  flash sbom                           - Generate SBOM" -ForegroundColor Gray
             Write-Host ""
             Write-Host "flash works with ANY Python/JS project!" -ForegroundColor Cyan
             Write-Host "   Bootstrap just pre-caches common packages for speed." -ForegroundColor Gray
-            Write-Host "   Use 'uv pip install -r requirements.txt' for any project." -ForegroundColor Gray
+            Write-Host "   Use 'uv pip install -r requirements.txt' or 'bun install' for any project." -ForegroundColor Gray
         }
     }
 }
