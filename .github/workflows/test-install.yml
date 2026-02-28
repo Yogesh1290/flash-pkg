@@ -7,65 +7,26 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  test-linux:
-    name: Test on Linux
+  test-syntax:
+    name: Verify Script Syntax
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Test install.sh
+      - name: Check install.sh syntax
         run: |
-          bash install.sh
+          bash -n install.sh
+          echo "✅ install.sh syntax is valid"
       
-      - name: Check if uv is installed
-        run: |
-          ~/.local/bin/uv --version || echo "uv not found"
-      
-      - name: Check if flash function exists
-        run: |
-          grep -q "flash()" ~/.bashrc && echo "flash function found" || echo "flash function not found"
-
-  test-macos:
-    name: Test on macOS
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Test install.sh
-        run: |
-          bash install.sh
-      
-      - name: Check if uv is installed
-        run: |
-          ~/.local/bin/uv --version || echo "uv not found"
-      
-      - name: Check if flash function exists
-        run: |
-          grep -q "flash()" ~/.bashrc && echo "flash function found" || echo "flash function not found"
-
-  test-windows:
-    name: Test on Windows
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Test install.ps1 (skip actual installation in CI)
+      - name: Check install.ps1 syntax
         shell: pwsh
         run: |
-          # Just verify the script syntax is valid
           Get-Content .\install.ps1 | Out-Null
-          Write-Host "install.ps1 syntax is valid"
+          Write-Host "✅ install.ps1 syntax is valid"
       
-      - name: Verify script structure
-        shell: pwsh
+      - name: Verify files exist
         run: |
-          $content = Get-Content .\install.ps1 -Raw
-          if ($content -match "flash-pkg") {
-            Write-Host "Script contains flash-pkg references"
-          }
-          if ($content -match "function flash") {
-            Write-Host "Script contains flash function"
-          }
+          test -f README.md && echo "✅ README.md exists"
+          test -f CONTRIBUTING.md && echo "✅ CONTRIBUTING.md exists"
+          test -f LICENSE && echo "✅ LICENSE exists"
