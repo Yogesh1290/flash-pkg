@@ -55,18 +55,21 @@ best_url="https://pypi.org/simple"
 for url in "${mirrors[@]}"; do
     time_taken=$(curl -s -w "%{time_total}" -o /dev/null --max-time 5 "${url}/simple/" 2>/dev/null || echo "999")
     echo "  ${url} → ${time_taken}s"
-    if (( $(echo "$time_taken < $best_time" | bc -l 2>/dev/null || echo 0) )); then
+    # Use awk instead of bc for better compatibility
+    if [ "$(echo "$time_taken $best_time" | awk '{print ($1 < $2)}')" = "1" ] 2>/dev/null; then
         best_time=$time_taken
         best_url="${url}/simple"
     fi
 done
 
 echo "→ Using fastest mirror: $best_url"
-uv pip config set global.index-url "$best_url" 2>/dev/null || true
-uv pip config set global.find-links "https://download.pytorch.org/whl/cpu" 2>/dev/null || true
+~/.local/bin/uv pip config set global.index-url "$best_url" 2>/dev/null || true
+~/.local/bin/uv pip config set global.find-links "https://download.pytorch.org/whl/cpu" 2>/dev/null || true
 
-# Set Bun registry
-bun config set registry "https://registry.npmmirror.com" 2>/dev/null || true
+# Set Bun registry (only if bun is installed)
+if command -v bun >/dev/null 2>&1; then
+    bun config set registry "https://registry.npmmirror.com" 2>/dev/null || true
+fi
 
 echo ""
 echo "→ Adding 'flash' command to $SHELL_CONFIG..."
