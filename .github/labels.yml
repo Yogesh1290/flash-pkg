@@ -1,0 +1,117 @@
+# Priority Labels
+- name: "priority: critical"
+  color: "d73a4a"
+  description: "Critical issue that blocks users"
+
+- name: "priority: high"
+  color: "ff6b6b"
+  description: "High priority issue"
+
+- name: "priority: medium"
+  color: "fbca04"
+  description: "Medium priority issue"
+
+- name: "priority: low"
+  color: "0e8a16"
+  description: "Low priority issue"
+
+# Type Labels
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+# Status Labels
+- name: "status: needs triage"
+  color: "ededed"
+  description: "Needs to be reviewed and prioritized"
+
+- name: "status: in progress"
+  color: "fbca04"
+  description: "Currently being worked on"
+
+- name: "status: blocked"
+  color: "d73a4a"
+  description: "Blocked by another issue or external factor"
+
+- name: "status: ready for review"
+  color: "0e8a16"
+  description: "Ready for code review"
+
+# Component Labels
+- name: "component: install"
+  color: "c5def5"
+  description: "Related to installation scripts"
+
+- name: "component: cache"
+  color: "c5def5"
+  description: "Related to cache export/import"
+
+- name: "component: python"
+  color: "c5def5"
+  description: "Related to Python/ML features"
+
+- name: "component: javascript"
+  color: "c5def5"
+  description: "Related to JavaScript/Bun features"
+
+- name: "component: docker"
+  color: "c5def5"
+  description: "Related to Docker templates"
+
+- name: "component: ci/cd"
+  color: "c5def5"
+  description: "Related to CI/CD pipelines"
+
+# Platform Labels
+- name: "platform: linux"
+  color: "bfdadc"
+  description: "Linux-specific issue"
+
+- name: "platform: macos"
+  color: "bfdadc"
+  description: "macOS-specific issue"
+
+- name: "platform: windows"
+  color: "bfdadc"
+  description: "Windows-specific issue"
+
+- name: "platform: wsl"
+  color: "bfdadc"
+  description: "WSL-specific issue"
+
+# Other Labels
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "invalid"
+  color: "e4e669"
+  description: "This doesn't seem right"
+
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency file"

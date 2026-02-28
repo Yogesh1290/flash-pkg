@@ -1,0 +1,64 @@
+name: Test Install Scripts
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-linux:
+    name: Test on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Test install.sh
+        run: |
+          bash install.sh
+          
+      - name: Verify flash command
+        run: |
+          source ~/.bashrc
+          flash
+          
+      - name: Test flash ml command
+        run: |
+          source ~/.bashrc
+          flash ml test-project
+          cd test-project
+          ls -la
+
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Test install.sh
+        run: |
+          bash install.sh
+          
+      - name: Verify flash command
+        run: |
+          source ~/.bashrc
+          flash
+
+  test-windows:
+    name: Test on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Test install.ps1
+        shell: pwsh
+        run: |
+          .\install.ps1
+          
+      - name: Verify flash command
+        shell: pwsh
+        run: |
+          flash

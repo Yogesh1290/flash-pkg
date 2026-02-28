@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Yogesh1290/flash-pkg/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/Yogesh1290/flash-pkg#readme
+    about: Read the full documentation
+  - name: ⭐ Star the Repo
+    url: https://github.com/Yogesh1290/flash-pkg
+    about: Show your support by starring the repository

@@ -1,5 +1,11 @@
 # flash-pkg 🚀
 
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)
+![Tests](https://github.com/Yogesh1290/flash-pkg/workflows/Test%20Install%20Scripts/badge.svg)
+![Stars](https://img.shields.io/github/stars/Yogesh1290/flash-pkg?style=social)
+
 **Universal Fast Dev Setup for Python (uv) + JS (Bun) — Optimized for Heavy ML & Enterprise**
 
 Stop waiting 45 minutes for `torch` and `paddleocr` to download. Get your ML/fullstack projects running in **under 30 seconds** after one-time bootstrap.
@@ -335,6 +341,21 @@ Built on top of:
 Made with ❤️ for developers who are tired of waiting.
 
 **Star this repo if it saves you time!** ⭐
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+- 🐛 [Report a bug](https://github.com/Yogesh1290/flash-pkg/issues/new?template=bug_report.md)
+- 💡 [Request a feature](https://github.com/Yogesh1290/flash-pkg/issues/new?template=feature_request.md)
+- 📖 [Improve documentation](https://github.com/Yogesh1290/flash-pkg/blob/main/CONTRIBUTING.md)
+- 🔧 [Submit a pull request](https://github.com/Yogesh1290/flash-pkg/pulls)
+
+**New to open source?** Check out our [Good First Issues](.github/FIRST_ISSUES.md)!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
