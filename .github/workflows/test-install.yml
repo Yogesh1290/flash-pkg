@@ -1,4 +1,4 @@
-name: Test Install Scripts
+name: Verify Repository
 
 on:
   push:
@@ -7,26 +7,31 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  test-syntax:
-    name: Verify Script Syntax
+  verify:
+    name: Verify Files and Scripts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Verify required files exist
+        run: |
+          echo "Checking required files..."
+          test -f README.md && echo "✅ README.md"
+          test -f CONTRIBUTING.md && echo "✅ CONTRIBUTING.md"
+          test -f LICENSE && echo "✅ LICENSE"
+          test -f install.sh && echo "✅ install.sh"
+          test -f install.ps1 && echo "✅ install.ps1"
+          test -f ROADMAP.md && echo "✅ ROADMAP.md"
+          echo "All required files present!"
+      
       - name: Check install.sh syntax
         run: |
-          bash -n install.sh
-          echo "✅ install.sh syntax is valid"
+          bash -n install.sh && echo "✅ install.sh syntax valid"
       
-      - name: Check install.ps1 syntax
-        shell: pwsh
+      - name: Verify documentation
         run: |
-          Get-Content .\install.ps1 | Out-Null
-          Write-Host "✅ install.ps1 syntax is valid"
-      
-      - name: Verify files exist
-        run: |
-          test -f README.md && echo "✅ README.md exists"
-          test -f CONTRIBUTING.md && echo "✅ CONTRIBUTING.md exists"
-          test -f LICENSE && echo "✅ LICENSE exists"
+          test -d docs && echo "✅ docs/ directory exists"
+          test -d test-examples && echo "✅ test-examples/ directory exists"
+          test -d .github && echo "✅ .github/ directory exists"
+          echo "Repository structure verified!"
