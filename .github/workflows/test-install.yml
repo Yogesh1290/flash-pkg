@@ -14,18 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Test install.sh
+      - name: Test install.sh and verify
         run: |
           bash install.sh
-          
-      - name: Verify flash command
-        run: |
           source ~/.bashrc
           flash
-          
-      - name: Test flash ml command
-        run: |
-          source ~/.bashrc
           flash ml test-project
           cd test-project
           ls -la
@@ -37,12 +30,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Test install.sh
+      - name: Test install.sh and verify
         run: |
           bash install.sh
-          
-      - name: Verify flash command
-        run: |
           source ~/.bashrc
           flash
 
@@ -53,12 +43,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Test install.ps1
+      - name: Test install.ps1 and verify
         shell: pwsh
         run: |
           .\install.ps1
-          
-      - name: Verify flash command
-        shell: pwsh
-        run: |
+          . $PROFILE
           flash
